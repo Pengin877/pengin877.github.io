@@ -19,7 +19,31 @@
         I tuned the controller extensively and introduced a feed-forward term to smooth the plate's motion. 
         I also explored an LQR controller as an alternative approach. The primary benchmarks for success are how long the ball remains on the plate, and how accurately it tracks its target position. </p>
     <h2>Building & Programming</h2>
+    <h3>Robot Build<h3>
     <img src="ball balancer.jpg" alt="Final Product Ball Balancer, along with Power Supply" width="400">
+    As you can see in the above figure, the setup I have consists of a bench power supply along with the ball balancing robot itself. The electronics are hidden in the base, 
+    where you see the wires from the servos coming out of as well as the pressure sensing plate wire. Each stepper motor has a 2-stage link attached, and are connected loosely to the plate, as in they allow a bit of lateral 
+    movement to the left and right. You can see this a bit closer in the image below, once again referenced at https://www.instructables.com/Ball-Balancer/. 
+    <img src="https://content.instructables.com/FGA/PWUD/LGKUJW5N/FGAPWUDLGKUJW5N.jpg" alt="Final Product Ball Balancer, along with Power Supply" width="400">
+    Other than the electronics (stepper motors, pressure plate, protoboards, etc), most of the physical parts are 3D printed and assembled with screws and nuts. This robot isn't bearing a particularly heavy load, and 
+    therefore 3D printed parts worked great for this build.
+    <img src="ball balancer.jpg" alt="Final Product Ball Balancer, along with Power Supply" width="400">
+    The figure below is a diagram of the way the motors are configured, where the two of the links connected to the motors control the height of opposing corners, and the last link of the other motor essentially
+    controls the "yaw" of the plate.
+    <img src="plate config.png" alt="Final Product Ball Balancer, along with Power Supply" width="400">
+    Notably, I did run into quite a few roadblocks when attempting to build the robot. The most "major" roadblock that I actually encountered was attempting to gain access to a shop, as I didn't have personal access to
+    a soldering iron. I had to put the project on hold for over a week, as I got delayed responses over email regarding access to soldering equipment. This consqeuntly lead to a shorter period of time to spend on tuning
+    and so my results didn't come out as polished as I would have liked. 
+        
+    Additionally, when tuning the robot, one of the links worked itself lose. I didn't have a wrench to tighten the nut with the screw, leading to only a semi-secure connection. This introduced a lot of play into one of 
+    the links, which introduced a bit of shaking when balancing, as the other two motors tried to compensate for the loose link. I therefore concluded the tuning at this point.
+        
+    <h3>Sensing<h3>
+    The pressure plate I used reads out x and y coordinates (x, y) of where it senses the greatest pressure. One of the corners is marked as (0, 0), 
+    and the opposing corners reads a maximum value of approximately (1000, 1000). To get proper readings from the plate, I put pressure as centered as possible and put that as an offset (which came out to (500,500)) 
+    within my PID controller. I subtracted this from all measurements, which put the center as the origin, and the other positions are diplsacements from that point in sensor unites. The derivative term in the PID then 
+    approximates the ball's belocity by computing the change in error between each loop iteration which is run every 20 milliseconds. There isn't an explicit conversion to actual distance in the real-world, just sensor 
+    units along with PID gains.
     <p></p>
     <h2>Conclusion</h2>
     <p></p>
