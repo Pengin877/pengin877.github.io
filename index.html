@@ -19,7 +19,7 @@
         I tuned the controller extensively and introduced a feed-forward term to smooth the plate's motion. 
         I also explored an LQR controller as an alternative approach. The primary benchmarks for success are how long the ball remains on the plate, and how accurately it tracks its target position. </p>
     <h2>Building & Programming</h2>
-    <h3>Robot Build<h3>
+    <h3>Robot Build</h3>
     <img src="ball balancer.jpg" alt="Final Product Ball Balancer, along with Power Supply" width="400">
     As you can see in the above figure, the setup I have consists of a bench power supply along with the ball balancing robot itself. The electronics are hidden in the base, 
     where you see the wires from the servos coming out of as well as the pressure sensing plate wire. Each stepper motor has a 2-stage link attached, and are connected loosely to the plate, as in they allow a bit of lateral 
@@ -38,7 +38,7 @@
     Additionally, when tuning the robot, one of the links worked itself lose. I didn't have a wrench to tighten the nut with the screw, leading to only a semi-secure connection. This introduced a lot of play into one of 
     the links, which introduced a bit of shaking when balancing, as the other two motors tried to compensate for the loose link. I therefore concluded the tuning at this point.
         
-    <h3>Sensing<h3>
+    <h3>Sensing</h3>
     The pressure plate I used reads out x and y coordinates (x, y) of where it senses the greatest pressure. One of the corners is marked as (0, 0), 
     and the opposing corners reads a maximum value of approximately (1000, 1000). To get proper readings from the plate, I put pressure as centered as possible and put that as an offset (which came out to (500,500)) 
     within my PID controller. I subtracted this from all measurements, which put the center as the origin, and the other positions are diplsacements from that point in sensor unites. The derivative term in the PID then 
