@@ -8,17 +8,18 @@
     <h2>Abstract</h2>
     <p></p>
     <h2>Introduction</h2>
-    <p>The goal of this project is to balance a steel ball bearing on a flat plate — an inherently unstable system,
-        since any tilt causes the ball to roll freely in that direction. The robot achieves this by using a pressure-sensing plate to estimate the ball's position,
-        and two stepper motors to tilt the plate in response, correcting the ball's trajectory in real time. This project served both as my 16-299 final project and as a personal challenge
-        — and has since earned a permanent spot as a desk ornament. <p>
-        <p>The control architecture is built around a PID controller, 
-        adapted from an existing open-source design https://www.instructables.com/Ball-Balancer/, which also included several target patterns for the ball to follow. 
-        Getting the PID tuned to work consistently across all patterns was the central challenge: when the ball needed to both correct its position and track a moving target simultaneously, 
+    <p>The goal of this project is to balance a steel ball bearing on a flat plate which is an inherently unstable system,
+        since any tilt causes the ball to roll freely in that direction. The robot achieves this by using a pressure-sensing plate to track the ball's position,
+        and three stepper motors to tilt the plate in response, correcting the ball's trajectory as it moves off center. This project served both as my 16-299 final project and as a fun build
+        and has since earned a permanent spot as a desk ornament. <p>
+        <p>The control of the plate is built around a PID controller, 
+        adapted from an existing file you can find at https://www.instructables.com/Ball-Balancer/, which also included several target patterns for the ball to follow. 
+        Getting the PID tuned to work consistently across all patterns was the central challenge, as when the ball needed to both correct its position and track a moving target simultaneously, 
         it frequently overshot and fell off the plate. To address this, 
         I tuned the controller extensively and introduced a feed-forward term to smooth the plate's motion. 
         I also explored an LQR controller as an alternative approach. The primary benchmarks for success are how long the ball remains on the plate, and how accurately it tracks its target position. </p>
     <h2>Building & Programming</h2>
+    <img src="ball balancer.jpg" alt="Final Product Ball Balancer, along with Power Supply" width="400">
     <p></p>
     <h2>Conclusion</h2>
     <p></p>
