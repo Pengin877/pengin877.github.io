@@ -79,6 +79,21 @@ img {
         <li>Put hte tilt command through the inverse kinematics and that gives motor commands to achieve the tilt</li>
         <li>Move the stepper motors towards the calculated position</li>
     </ul>
+
+    Specific to this project, the gains mean the following:
+    <ul>
+        <li>P - The further the ball is from the center, the greater the plate tilt is to correct it</li>
+        <li>I - If the ball is sitting off center for a extened period, the integral builds up and will attempt to nudge it back</li>
+        <li>D - If the ball is moving fast towards the edge, the plate anticipates this and tilts harder. Conversely, if it's already moving towards the center, the plate will lessen the tilt</li>
+    </ul>
+
+   <p>
+       The final gains that I ended up with regards to this were kp = 3E-4, ki = 2E-6, and kd = 9E-3. As you can see, my kd is about 30 times larger than kp, which reflects the fact that the 
+       damping was very important to this system, as overly large kp would lead to oscillations, while overly small kd would lead to overshooting. Then, the ki term is relatively small to avoid integral windup,
+       where the integral windup may offset the true center too greatly, and cause inconsistent results.
+       
+   </p>
+    
     <h2>Conclusion</h2>
     <p></p>
 
