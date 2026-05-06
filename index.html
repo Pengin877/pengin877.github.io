@@ -66,6 +66,19 @@ img {
     approximates the ball's belocity by computing the change in error between each loop iteration which is run every 20 milliseconds. There isn't an explicit conversion to actual distance in the real-world, just sensor 
     units along with PID gains.
     <p></p>
+    <h3>PID, LQR, and Feed-Forward Control </h3>
+    The robot runs the Arduino program using a Teensy 4.1 Microcontroller, where the 3 stepper motor A,B, and C, as well as the pressure plate are connected. The robot is classified as a 3RPS parallel manipulator, 
+    which essentially means that hte three legs push on the plate from below by changing their heights independent of each other, giving the plate a wider range of motion. There is an included library that handles the 
+    inverse kinematics of turning the desired tilt (x, y) into the actual angle for the 3 motors and their links. 
+
+    Within the control loop, this is what is repeated every 20 milliseconds:
+    <ul>
+        <li>Read the touchscreen's output in order to get the balls (x, y) position</li>
+        <li>Subtract the offset to get the error or distance from center</li>
+        <li>Run the PID controller to compute how to tilt the plate as well as what direction to tilt</li>
+        <li>Put hte tilt command through the inverse kinematics and that gives motor commands to achieve the tilt</li>
+        <li>Move the stepper motors towards the calculated position</li>
+    </ul>
     <h2>Conclusion</h2>
     <p></p>
 
