@@ -21,12 +21,17 @@ img {
 <body>
     <h1>Ball Balancer</h1>
     <h2>Abstract</h2>
-    <p></p>
+    <p>
+        This project presents construction and control of a ball balancing robot built using a 3RPS parallel manipulator platform. A pressure-sensing plate tracks the position of a steel ball bearing,
+        and three stepper motors tilt the plate in response to keep the ball centered. The control system is built around a PID controller, with additional work done attempting to implement feed-forward and LQR control 
+        strategies. THe feed-forward controller produced visible improvements in pattern-following stability, particularly with an ellipse trajectory. However, there were both mechanical and logistical constraints that 
+        limited the depth of implementation and tuning achievable. Despite this, the system was still able to successfully demonstrate closed-loop ball balancing and is a great example for future control work.
+    </p>
     <h2>Introduction</h2>
     <p>The goal of this project is to balance a steel ball bearing on a flat plate which is an inherently unstable system,
         since any tilt causes the ball to roll freely in that direction. The robot achieves this by using a pressure-sensing plate to track the ball's position,
         and three stepper motors to tilt the plate in response, correcting the ball's trajectory as it moves off center. This project served both as my 16-299 final project and as a fun build
-        and has since earned a permanent spot as a desk ornament. <p>
+        and has since earned a permanent spot as a desk ornament. </p>
         <p>The control of the plate is built around a PID controller, 
         adapted from an existing file you can find at https://www.instructables.com/Ball-Balancer/, which also included several target patterns for the ball to follow. 
         Getting the PID tuned to work consistently across all patterns was the central challenge, as when the ball needed to both correct its position and track a moving target simultaneously, 
@@ -38,7 +43,7 @@ img {
     <img src="ball balancer.jpg" alt="Final Product Ball Balancer, along with Power Supply" width="400">
     
     As you can see in the above figure, the setup I have consists of a bench power supply along with the ball balancing robot itself. The electronics are hidden in the base, 
-    where you see the wires from the servos coming out of as well as the pressure sensing plate wire. Each stepper motor has a 2-stage link attached, and are connected loosely to the plate, as in they allow a bit of lateral 
+    where you see the wires from the stepper motors coming out of as well as the pressure sensing plate wire. Each stepper motor has a 2-stage link attached, and are connected loosely to the plate, as in they allow a bit of lateral 
     movement to the left and right. You can see this a bit closer in the image below, once again referenced at https://www.instructables.com/Ball-Balancer/. 
     <img src="https://content.instructables.com/FGA/PWUD/LGKUJW5N/FGAPWUDLGKUJW5N.jpg" alt="Final Product Ball Balancer, along with Power Supply" width="400">
     
@@ -47,28 +52,28 @@ img {
     
     <img src="ball balancer.jpg" alt="Final Product Ball Balancer, along with Power Supply" width="400">
     
-    The figure below is a diagram of the way the motors are configured, where the two of the links connected to the motors control the height of opposing corners, and the last link of the other motor essentially
-    controls the "yaw" of the plate.
+    The figure below is a diagram of the way the motors are configured, where the two of the links connected to the motors control the height of opposing corners, and the last link of the other motor controls the remaining
+    axis.
     
     <img src="plate config.png" alt="Final Product Ball Balancer, along with Power Supply" width="400">
     
     Notably, I did run into quite a few roadblocks when attempting to build the robot. The most "major" roadblock that I actually encountered was attempting to gain access to a shop, as I didn't have personal access to
-    a soldering iron. I had to put the project on hold for over a week, as I got delayed responses over email regarding access to soldering equipment. This consqeuntly lead to a shorter period of time to spend on tuning
+    a soldering iron. I had to put the project on hold for over a week, as I got delayed responses over email regarding access to soldering equipment. This consequently led to a shorter period of time to spend on tuning
     and so my results didn't come out as polished as I would have liked. 
         
-    Additionally, when tuning the robot, one of the links worked itself lose. I didn't have a wrench to tighten the nut with the screw, leading to only a semi-secure connection. This introduced a lot of play into one of 
+    Additionally, when tuning the robot, one of the links worked itself loose. I didn't have a wrench to tighten the nut with the screw, leading to only a semi-secure connection. This introduced a lot of play into one of 
     the links, which introduced a bit of shaking when balancing, as the other two motors tried to compensate for the loose link. I therefore concluded the tuning at this point.
         
     <h3>Sensing</h3>
     The pressure plate I used reads out x and y coordinates (x, y) of where it senses the greatest pressure. One of the corners is marked as (0, 0), 
     and the opposing corners reads a maximum value of approximately (1000, 1000). To get proper readings from the plate, I put pressure as centered as possible and put that as an offset (which came out to (500,500)) 
-    within my PID controller. I subtracted this from all measurements, which put the center as the origin, and the other positions are diplsacements from that point in sensor unites. The derivative term in the PID then 
-    approximates the ball's belocity by computing the change in error between each loop iteration which is run every 20 milliseconds. There isn't an explicit conversion to actual distance in the real-world, just sensor 
+    within my PID controller. I subtracted this from all measurements, which put the center as the origin, and the other positions are displacements from that point in sensor units. The derivative term in the PID then 
+    approximates the ball's velocity by computing the change in error between each loop iteration which is run every 20 milliseconds. There isn't an explicit conversion to actual distance in the real-world, just sensor 
     units along with PID gains.
     <p></p>
     <h3>PID, LQR, and Feed-Forward Control </h3>
-    The robot runs the Arduino program using a Teensy 4.1 Microcontroller, where the 3 stepper motor A,B, and C, as well as the pressure plate are connected. The robot is classified as a 3RPS parallel manipulator, 
-    which essentially means that hte three legs push on the plate from below by changing their heights independent of each other, giving the plate a wider range of motion. There is an included library that handles the 
+    The robot runs the program using a Teensy 4.1 Microcontroller, where the 3 stepper motor A,B, and C, as well as the pressure plate are connected. The robot is classified as a 3RPS parallel manipulator, 
+    which essentially means that the three legs push on the plate from below by changing their heights independent of each other, allowing the plate to tilt in any direction. There is an included library that handles the 
     inverse kinematics of turning the desired tilt (x, y) into the actual angle for the 3 motors and their links. 
 
     Within the control loop, this is what is repeated every 20 milliseconds:
@@ -76,30 +81,60 @@ img {
         <li>Read the touchscreen's output in order to get the balls (x, y) position</li>
         <li>Subtract the offset to get the error or distance from center</li>
         <li>Run the PID controller to compute how to tilt the plate as well as what direction to tilt</li>
-        <li>Put hte tilt command through the inverse kinematics and that gives motor commands to achieve the tilt</li>
+        <li>Put the tilt command through the inverse kinematics and that gives motor commands to achieve the tilt</li>
         <li>Move the stepper motors towards the calculated position</li>
     </ul>
 
     Specific to this project, the gains mean the following:
     <ul>
         <li>P - The further the ball is from the center, the greater the plate tilt is to correct it</li>
-        <li>I - If the ball is sitting off center for a extened period, the integral builds up and will attempt to nudge it back</li>
+        <li>I - If the ball is sitting off center for an extended period, the integral builds up and will attempt to nudge it back</li>
         <li>D - If the ball is moving fast towards the edge, the plate anticipates this and tilts harder. Conversely, if it's already moving towards the center, the plate will lessen the tilt</li>
     </ul>
 
-   <p>
+    <p>
        The final gains that I ended up with regards to this were kp = 3E-4, ki = 2E-6, and kd = 9E-3. As you can see, my kd is about 30 times larger than kp, which reflects the fact that the 
        damping was very important to this system, as overly large kp would lead to oscillations, while overly small kd would lead to overshooting. Then, the ki term is relatively small to avoid integral windup,
        where the integral windup may offset the true center too greatly, and cause inconsistent results.
-       
-   </p>
+    </p>
+    <p>
+        Additionally, motor speed is calculated separately by how far it is from its target position. When it is further from the target, it moves faster, but gradually slows down as it approaches the target position,
+        which attempts to avoid jerky motion. There is also an output constraint on the plate, only allowing for a PID output tilt of  0.25 units total.
+    </p>
+    <p>
+        For the pattern program, I implemented a feed-forward controller on rounded shapes such as an ellipse and figure eight in order to smooth out the pattern shape. With raw PID, it continually tries to correct for
+        the ball's error, not following the pattern before it gets the ball back on track, so the motion looks very rough. Since the pattern points are known beforehand,
+        adding the feed-forward term pre-emptively tilts the plate towards the next target before error accumulates. The most notable result was on the ellipse, as before with raw PID, 
+        the ball would consistently gain error and become unstable, either falling off or completely losing the pattern shape. Then, after 
+        adding the feed-forward controller, the motion was noticeably more stable and consistent, as the ball would continually come back to the ellipse motion. However, when working on the figure eight, I ran into the 
+        loose joint issue and promptly stopped as optimizing the shapes became quite a bit harder as it was shaky and unstable after that.
+    </p>
+    <p>
+        I also explored LQR, as I believed that it could lead me to a smoother and more optimal controller. It minimizes a cost function between balancing error and control effort. 
+        However, I ran into one major error with my implementation, which was that I couldn't get my plate to react correctly when pressure was being applied. I moved on to the feed-forward controller,
+        thinking I would fix the LQR controller later, but I ran into the joint problem and had to stop before then.
+    </p>
     
     <h2>Conclusion</h2>
-    <p></p>
+    <p>
+        Overall, I was able to achieve the main goal of this project, which was keeping the ball centered on the plate as well as follow several patterns with fair stability and accuracy. The PID controller, after tuning, 
+        performed well in regards to basic balancing. Then, with the addition of the feed-forward controller, there was noticeable improvement on the ellipse pattern, producing a much smoother and consistent motion 
+        compared to raw PID alone.
+    </p>
+    <p>
+        However, there were two issues that led to limited results. I was delayed shop access, so I lost close to two weeks of time which I was hoping to spend doing some additional tuning, and I also ran into a loose 
+        joint later into tuning that prevented me from continuing. If I were to continue this project, or re-do it, I would definitely try to be more time conscious so that I have adequete time to tune. I think it may have 
+        also been helpful to have more tools at my personal disposal, but I was too reliant on shop access for assembling my robot, which lead to my inability to fix the loose joint.
+    </p>
+    <p>
+        If I or anyone else were to improve or expand this project, I believe that the LQR controller could still potentially outperform the manually tuned PID controller as it finds a more optimal set of gains. The 
+        feed-forward controller could also be improved, as I was only able to get real results on the ellipse and there is still the figure eight and sinusoidal patterns which could be optimized. There could also be
+        changes in ball sensing methods, either via a camera, IR sensors, or perhaps another solution that may give more accurate measurements.
+    </p>
 
     <h2>References</h2>
     <p>
-        <a href="https://www.youtube.com">My YouTube link</a>
+        <a href="https://www.instructables.com/Ball-Balancer/">Original Ball Balancer & Files</a>
     </p>
 
     <h2>Videos (optional embed)</h2>
