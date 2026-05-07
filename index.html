@@ -101,6 +101,9 @@ img {
         Additionally, motor speed is calculated separately by how far it is from its target position. When it is further from the target, it moves faster, but gradually slows down as it approaches the target position,
         which attempts to avoid jerky motion. There is also an output constraint on the plate, only allowing for a PID output tilt of  0.25 units total.
     </p>
+    <iframe width="560" height="315"
+        src="https://www.youtube.com/embed/cV1XsCIbG_g">
+    </iframe>
     <p>
         For the pattern program, I implemented a feed-forward controller on rounded shapes such as an ellipse and figure eight in order to smooth out the pattern shape. With raw PID, it continually tries to correct for
         the ball's error, not following the pattern before it gets the ball back on track, so the motion looks very rough. Since the pattern points are known beforehand,
@@ -109,6 +112,15 @@ img {
         adding the feed-forward controller, the motion was noticeably more stable and consistent, as the ball would continually come back to the ellipse motion. However, when working on the figure eight, I ran into the 
         loose joint issue and promptly stopped as optimizing the shapes became quite a bit harder as it was shaky and unstable after that.
     </p>
+    Shapes with Raw PID:
+    <h3>Triangle</h3>
+    <iframe width="560" height="315"
+        src="https://www.youtube.com/embed/QdT3W5FcngY">
+    </iframe>
+    <h3>Square</h3>
+    <iframe width="560" height="315"
+        src="https://www.youtube.com/embed/VtOVyElZ1I8">
+    </iframe>
     <p>
         I also explored LQR, as I believed that it could lead me to a smoother and more optimal controller. It minimizes a cost function between balancing error and control effort. 
         However, I ran into one major error with my implementation, which was that I couldn't get my plate to react correctly when pressure was being applied. I moved on to the feed-forward controller,
@@ -131,12 +143,31 @@ img {
         feed-forward controller could also be improved, as I was only able to get real results on the ellipse and there is still the figure eight and sinusoidal patterns which could be optimized. There could also be
         changes in ball sensing methods, either via a camera, IR sensors, or perhaps another solution that may give more accurate measurements.
     </p>
-
+    
     <h2>References</h2>
     <p>
         <a href="https://www.instructables.com/Ball-Balancer/">Original Ball Balancer & Files</a>
     </p>
+    <h2>Source Code</h2>
 
+<ul>
+    <li>
+        <a href="Ball_Balancing.ino">
+            PID Ball Balancer Code (with my gains)
+        </a>
+    </li>
+
+    <li>
+        <a href="Ball_Ballancing_LQR.ino">
+            (Non-Working) LQR Ball Balancer Code
+        </a>
+    </li>
+    <li>
+        <a href="Patterns.ino">
+            Pattern Code W/ Feed-Forward Controller
+        </a>
+    </li>
+</ul>
     <h2>Videos (optional embed)</h2>
     <iframe width="560" height="315"
         src="https://www.youtube.com/embed/dQw4w9WgXcQ">
